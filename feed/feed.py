@@ -27,11 +27,11 @@ def get_last_messages(token: str, db: Session = Depends(database.get_db)):
     result = []
     messages = crud.get_last_n_messages(db, 10, 'desc')
     for message in messages:
-        result.append[{
+        result.append({
             'username' : message.username,
             'likes' : len(message.likes),
             'isLiked': username in message.likes
-        }]
+        })
 
     return {"messages": result}
 

@@ -59,6 +59,12 @@ def get_active_sessions(db: Session, username: str):
         AuthSession.expire_at > current_time()
     ).all()
 
+def get_auth_session(db: Session, token: str):
+    auth_session = db.query(AuthSession).filter(AuthSession.token == token).first()
+    if not auth_session:
+        raise ValueError(f"AuthSession with token {token} does not exist.")
+    return auth_session
+
 # CRUD operations for Message
 def create_message(db: Session, username: str, text: str):
     user = db.query(User).filter(User.username == username).first()

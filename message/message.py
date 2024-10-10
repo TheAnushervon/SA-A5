@@ -20,7 +20,7 @@ def like_message(message_id: int, token: str, db: Session = Depends(database.get
     if not crud.check_auth_session(db, token):
         raise HTTPException(status_code=400, detail='Unauthorized access')
     
-    auth_session = crud.get_auth_session(token, db)
+    auth_session = crud.get_auth_session(db, token)
 
     username = auth_session.username
 
@@ -35,7 +35,7 @@ def unlike_message(message_id: int, token: str, db: Session = Depends(database.g
     if not crud.check_auth_session(db, token):
         raise HTTPException(status_code=400, detail='Unauthorized access')
     
-    auth_session = crud.get_auth_session(token, db)
+    auth_session = crud.get_auth_session(db, token)
 
     username = auth_session.username
 
@@ -50,7 +50,7 @@ def create_message(message: str, token: str, db: Session = Depends(database.get_
     if not crud.check_auth_session(db, token):
         raise HTTPException(status_code=400, detail='Unauthorized access')
     
-    auth_session = crud.get_auth_session(token, db)
+    auth_session = crud.get_auth_session(db, token)
 
     username = auth_session.username
 

@@ -20,7 +20,7 @@ class Message(BaseModel):
 
 @app.post("/message/{message_id}/like")
 def like_message(message_id: int, token: str, db: Session = Depends(database.get_db)):
-    if not crud.check_auth_session(token, db):
+    if not crud.check_auth_session(db, token):
         raise HTTPException(status_code=400, detail='Unauthorized access')
     
     auth_session = crud.get_auth_session(token, db)
@@ -35,7 +35,7 @@ def like_message(message_id: int, token: str, db: Session = Depends(database.get
     
 @app.post("/message/{message_id}/unlike")
 def unlike_message(message_id: int, token: str, db: Session = Depends(database.get_db)):
-    if not crud.check_auth_session(token, db):
+    if not crud.check_auth_session(db, token):
         raise HTTPException(status_code=400, detail='Unauthorized access')
     
     auth_session = crud.get_auth_session(token, db)
@@ -50,7 +50,7 @@ def unlike_message(message_id: int, token: str, db: Session = Depends(database.g
 
 @app.post("/message")
 def create_message(message: Message, token: str, db: Session = Depends(database.get_db)):
-    if not crud.check_auth_session(token, db):
+    if not crud.check_auth_session(db, token):
         raise HTTPException(status_code=400, detail='Unauthorized access')
     
 

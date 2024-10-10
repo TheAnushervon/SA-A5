@@ -17,10 +17,10 @@ def lifespan(app: FastAPI):
 
 @app.get("/feed")
 def get_last_messages(token: str, db: Session = Depends(database.get_db)):
-    if not crud.check_auth_session(token, db):
+    if not crud.check_auth_session(db, token):
         raise HTTPException(status_code=400, detail='Unauthorized access')
 
-    username = crud.get_auth_session(token, db).username
+    username = crud.get_auth_session(db, token).username
     
     
     result = []

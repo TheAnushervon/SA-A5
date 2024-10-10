@@ -90,10 +90,11 @@ def get_messages_by_user(db: Session, username: str, sort_order: Literal['ask', 
     return query.all()
 
 
-def get_all_messages(db: Session, sort_order: Literal['ask', 'desc']="desc"):
+def get_last_n_messages(db: Session, n: int, sort_order: Literal['asc', 'desc']="desc"):
     """
-    Retrieve all messages from the database, sorted by time.
+    Retrieve the last n messages from the database, sorted by time.
 
+    :param n: The number of messages to retrieve
     :param sort_order: 'asc' for ascending or 'desc' for descending
     :return: List of Message objects
     """
@@ -104,7 +105,7 @@ def get_all_messages(db: Session, sort_order: Literal['ask', 'desc']="desc"):
     else:
         query = query.order_by(Message.time.asc())
     
-    return query.all()
+    return query.limit(n).all()
 
 
 def delete_message(db: Session, message_id: int):

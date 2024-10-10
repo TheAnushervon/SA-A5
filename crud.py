@@ -6,8 +6,9 @@ from models import User, AuthSession, Message, Like
 def current_time():
     return datetime.now()
 
-def expiration_time():
-    return current_time() + timedelta(minutes=30)
+def expiration_time(expires_delta: timedelta = None):
+    return current_time() + (timedelta(minutes=30) if expires_delta is None else expires_delta)
+
 
 # CRUD operations for User
 def create_user(db: Session, username: str):

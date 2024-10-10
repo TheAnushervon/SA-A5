@@ -38,15 +38,24 @@ def create_auth_session(db: Session, username: str):
 def ping_auth_session(db: Session, token: str):
     auth_session = db.query(AuthSession).filter(AuthSession.token == token).first()
     if auth_session and auth_session.expire_at > current_time():
-        auth_session.expire_at = expiration_time()  # Extend the session for 30 more minutes
+        auth_session.expire_at = expiration_time()
         db.commit()
         return auth_session
-    return None  # Return None if the session is invalid or inactive
+    return None 
+
+def check_auth_session(db: Session, token: str, ping=True):
+    auth_session = db.query(AuthSession).filter(AuthSession.token == token).first()
+    if auth_session and auth_session.expire_at > current_time():
+        if ping:
+            auth_session.expire_at = expiration_time()
+        db.commit()
+        return True
+    return False
 
 def deactivate_session(db: Session, token: str):
     session = db.query(AuthSession).filter(AuthSession.token == token).first()
     if session:
-        session.expire_at = current_time()  # Set expiration time to now
+        session.expire_at = current_time() 
         db.commit()
         return session
     return None
@@ -131,7 +140,11 @@ def like_message(db: Session, username: str, message_id: int):
     if not user or not message:
         raise ValueError("Invalid user or message.")
     
-    like = Like(username=user.username, message_id=message.id)
+    try:
+        like = Like(username=user.username, message_id=message.id)
+    except IndentationError:
+        raise ValueError(f"Message {message_id} already liked by {username}") from None
+    
     db.add(like)
     db.commit()
     return like

@@ -5,7 +5,6 @@ from database import get_db
 import database
 import models  # assuming you have a function that provides a database session
 
-app = FastAPI()
 
 def lifespan(app: FastAPI):
     print("Starting up...")
@@ -13,6 +12,7 @@ def lifespan(app: FastAPI):
     yield  # The app runs between yield points
     print("Shutting down...")
 
+app = FastAPI(lifespan=lifespan)
 
 @app.post("/auth/register")
 def register_user(username: str, db: Session = Depends(get_db)):

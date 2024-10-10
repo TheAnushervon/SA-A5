@@ -6,7 +6,6 @@ import models
 import database
 from sqlalchemy.orm import Session
 
-app = FastAPI()
 
 def lifespan(app: FastAPI):
     print("Starting up...")
@@ -14,9 +13,7 @@ def lifespan(app: FastAPI):
     yield  # The app runs between yield points
     print("Shutting down...")
 
-class Message(BaseModel):
-    username: str
-    message: str
+app = FastAPI(lifespan=lifespan)
 
 @app.post("/message/{message_id}/like")
 def like_message(message_id: int, token: str, db: Session = Depends(database.get_db)):
@@ -49,13 +46,16 @@ def unlike_message(message_id: int, token: str, db: Session = Depends(database.g
 
 
 @app.post("/message")
-def create_message(message: Message, token: str, db: Session = Depends(database.get_db)):
+def create_message(message: str, token: str, db: Session = Depends(database.get_db)):
     if not crud.check_auth_session(db, token):
         raise HTTPException(status_code=400, detail='Unauthorized access')
     
+    auth_session = crud.get_auth_session(token, db)
+
+    username = auth_session.username
 
     try:
-        crud.create_message(db, message.username, message.message)
-        return {"message": f"<{message.username}> has added <{message.message}>"}
+        crud.create_message(db, username, message)
+        return {"message": f"<{username}> has added <{message}>"}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

@@ -6,13 +6,14 @@ import models
 import database
 from sqlalchemy.orm import Session
 
-app = FastAPI()
 
 def lifespan(app: FastAPI):
     print("Starting up...")
     models.Base.metadata.create_all(bind=database.engine)    
     yield  # The app runs between yield points
     print("Shutting down...")
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/feed")

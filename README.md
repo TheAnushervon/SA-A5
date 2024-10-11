@@ -10,14 +10,21 @@ Anushervon Qodirzoda | Ilias Dzhabbarov  |  Muhammad Allayarov
 
 1. Clone the repo
 2. Create an environment and activate
+```bash
 python3 -m venv venv
 source venv/bin/activate
+```
 3. Install dependencies
+```bash
 pip install -r pip-requirements.txt
-4. Run services (if you want to run by hand or you can use start.bat script for Win)
+```
+4. Run services (if you want to run by hand, but there are start.sh and start.bat scripts both for Linux and Windows)
+
+```bash
 uvicorn message.message:app --reload
 uvicorn user.auth:app --reload
 uvicorn feed.feed:app --reload
+```
 
 ## Structure
 
@@ -29,4 +36,4 @@ Each service is independent and can be scaled, at least by adding feature for po
 
 ## Demo
 
-[Link]()
+[Link](https://drive.google.com/file/d/1n0m7WLZGqfgLBs_fF0BE5vgdsVQ9-qAd/view?usp=sharing)

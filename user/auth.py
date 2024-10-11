@@ -3,13 +3,13 @@ from sqlalchemy.orm import Session
 import crud
 from database import get_db
 import database
-import models  # assuming you have a function that provides a database session
+import models
 
 
 def lifespan(app: FastAPI):
     print("Starting up...")
     models.Base.metadata.create_all(bind=database.engine)
-    yield  # The app runs between yield points
+    yield
     print("Shutting down...")
 
 

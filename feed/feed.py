@@ -1,5 +1,4 @@
 from fastapi import FastAPI, Depends, HTTPException
-# from pydantic import BaseModel
 
 import crud
 import models
@@ -10,7 +9,7 @@ from sqlalchemy.orm import Session
 def lifespan(app: FastAPI):
     print("Starting up...")
     models.Base.metadata.create_all(bind=database.engine)
-    yield  # The app runs between yield points
+    yield
     print("Shutting down...")
 
 

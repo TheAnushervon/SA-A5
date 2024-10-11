@@ -8,45 +8,49 @@ import models  # assuming you have a function that provides a database session
 
 def lifespan(app: FastAPI):
     print("Starting up...")
-    models.Base.metadata.create_all(bind=database.engine)    
+    models.Base.metadata.create_all(bind=database.engine)
     yield  # The app runs between yield points
     print("Shutting down...")
 
+
 app = FastAPI(lifespan=lifespan)
+
 
 @app.post("/auth/register")
 def register_user(username: str, db: Session = Depends(get_db)):
     # Check if the user already exists
-    existing_user = db.query(crud.User).filter(crud.User.username == username).first()
+    existing_user = db.query(crud.User).filter(
+        crud.User.username == username).first()
     if existing_user:
-        raise HTTPException(status_code=400, detail="User with this username already exists")
-    
+        raise HTTPException(
+            status_code=400, detail="User with this username already exists")
+
     # Create a new user
     try:
         new_user = crud.create_user(db, username)
-        
+
         # Auto-login by creating an auth session and issuing a token
         auth_session = crud.create_auth_session(db, new_user.username)
         return {"message": "User registered successfully", "token": auth_session.token, "expires_at": auth_session.expire_at}
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Error during registration")
-    
+        raise HTTPException(
+            status_code=500, detail="Error during registration")
 
 
 @app.post("/auth/login")
 def login_user(username: str, db: Session = Depends(get_db)):
     # Check if the user exists
-    existing_user = db.query(crud.User).filter(crud.User.username == username).first()
+    existing_user = db.query(crud.User).filter(
+        crud.User.username == username).first()
     if not existing_user:
         raise HTTPException(status_code=400, detail="User not found")
-    
+
     # Issue a new token by creating an auth session
     try:
         auth_session = crud.create_auth_session(db, username)
         return {"message": "Login successful", "token": auth_session.token, "expires_at": auth_session.expire_at}
     except Exception as e:
         raise HTTPException(status_code=500, detail="Error during login")
-
 
 
 @app.post("/auth/logout")
